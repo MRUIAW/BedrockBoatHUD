@@ -26,13 +26,13 @@ if ($package.variants.Count -ne 1 -or $package.variants[0].label -cne 'client') 
     throw 'Release must contain only the client variant'
 }
 
-$modRoot = Join-Path $projectRoot 'bin/BedrockBoatHUD'
+$modRoot = Join-Path $projectRoot 'bin/BoatHUD'
 $manifest = Get-Content -Raw -LiteralPath (Join-Path $modRoot 'manifest.json') | ConvertFrom-Json
-if ($manifest.version -cne $version -or $manifest.name -cne 'BedrockBoatHUD' -or
-    $manifest.platform -cne 'client' -or $manifest.entry -cne 'BedrockBoatHUD.dll') {
+if ($manifest.version -cne $version -or $manifest.name -cne 'BoatHUD' -or
+    $manifest.platform -cne 'client' -or $manifest.entry -cne 'BoatHUD.dll') {
     throw 'Built mod manifest does not match the release. Rebuild first.'
 }
-$relativeFiles = @('BedrockBoatHUD.dll', 'BedrockBoatHUD.pdb', 'manifest.json', 'lang/en.json', 'lang/zh_CN.json')
+$relativeFiles = @('BoatHUD.dll', 'BoatHUD.pdb', 'manifest.json', 'lang/en.json', 'lang/zh_CN.json')
 foreach ($file in $relativeFiles) {
     $item = Get-Item -LiteralPath (Join-Path $modRoot $file)
     if ($item.Length -eq 0) { throw "Empty release file: $file" }
@@ -54,7 +54,7 @@ if (-not $releaseSection.Success) { throw "No dated changelog section for $versi
 $releaseRoot = Join-Path $projectRoot 'build/release'
 $stagingRoot = Join-Path $projectRoot ("build/package-$version-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $releaseRoot -Force | Out-Null
-$stagedMod = Join-Path $stagingRoot 'BedrockBoatHUD'
+$stagedMod = Join-Path $stagingRoot 'BoatHUD'
 New-Item -ItemType Directory -Path (Join-Path $stagedMod 'lang') -Force | Out-Null
 foreach ($file in $relativeFiles) {
     Copy-Item -LiteralPath (Join-Path $modRoot $file) -Destination (Join-Path $stagedMod $file)
@@ -72,15 +72,15 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'examples') -Destination (Join-Pa
 $archiveName = 'BedrockBoatHUD-client-windows-x64.zip'
 $archivePath = Join-Path $releaseRoot $archiveName
 $assetUrl = $package.variants[0].assets[0].urls[0].Replace('{{tooth}}', $package.tooth).Replace('{{version}}', $version)
-if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/$archiveName") {
+if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/${archiveName}?revision=20261001-boathud") {
     throw 'lip asset URL does not match the release archive'
 }
 $placement = $package.variants[0].assets[0].placements[0]
-if ($placement.src -cne 'BedrockBoatHUD/' -or $placement.dest -cne 'mods/BedrockBoatHUD/') {
+if ($placement.src -cne 'BoatHUD/' -or $placement.dest -cne 'mods/BoatHUD/') {
     throw 'lip placement does not match the archive layout'
 }
 foreach ($directory in @('config', 'data')) {
-    if ($package.variants[0].preserve_files -cnotcontains "mods/BedrockBoatHUD/$directory/**") {
+    if ($package.variants[0].preserve_files -cnotcontains "mods/BoatHUD/$directory/**") {
         throw "lip does not preserve the installed $directory directory"
     }
 }
@@ -91,10 +91,13 @@ $zip = [System.IO.Compression.ZipFile]::OpenRead($archivePath)
 try {
     $entries = @($zip.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
     foreach ($file in $relativeFiles) {
-        if ($entries -cnotcontains "BedrockBoatHUD/$file") { throw "Archive missing $file" }
+        if ($entries -cnotcontains "BoatHUD/$file") { throw "Archive missing $file" }
     }
-    if ($entries | Where-Object { $_ -match '^BedrockBoatHUD/(config|data)/' }) {
+    if ($entries | Where-Object { $_ -match '^(BoatHUD|BedrockBoatHUD)/(config|data)/' }) {
         throw 'Archive contains private runtime data'
+    }
+    if ($entries | Where-Object { $_ -match '^BedrockBoatHUD/' }) {
+        throw 'Archive contains the obsolete mod directory'
     }
 } finally {
     $zip.Dispose()

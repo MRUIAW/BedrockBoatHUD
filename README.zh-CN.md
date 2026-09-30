@@ -29,11 +29,14 @@
 安装或更新前完全退出 Minecraft。在 LeviLamina 游戏实例目录中使用 [lip](https://lip.levimc.org/)：
 
 ```powershell
-lip install "github.com/MRUIAW/BoatHUD#client@1.0.0"
+Invoke-WebRequest "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v1.0.0/BedrockBoatHUD-client-windows-x64.zip" -OutFile BedrockBoatHUD-client-windows-x64.zip
+lip install ".\BedrockBoatHUD-client-windows-x64.zip#client"
 ```
 ### 手动安装
 
-从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BedrockBoatHUD-client-windows-x64.zip`，将压缩包中的 `BedrockBoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。Release 标题统一为 `v<模组版本>-mc<游戏系列>`，当前为 `v1.0.0-mc26.5x`；标题不扩大上述实际兼容范围。仅发布一份重新编译的客户端包。
+从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BedrockBoatHUD-client-windows-x64.zip`，将压缩包中的 `BoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。Release 标题统一为 `v<模组版本>-mc<游戏系列>`，当前为 `v1.0.0-mc26.5x`；标题不扩大上述实际兼容范围。仅发布一份重新编译的客户端包。
+
+本次 1.0.0 重编译将安装目录和模组标识改为 `BoatHUD`。请按上方方法重新下载 ZIP 并安装；原 `v1.0.0` 的 Git/lip 清单可能缓存旧目录。安装前退出游戏，将已有的 `mods/BedrockBoatHUD` 移到 `mods` 目录之外，避免两个模组同时加载；旧配置不自动迁移。
 
 启动游戏并坐上船的驾驶位即可看到 HUD；作为乘客时不显示驾驶 HUD。
 
@@ -68,11 +71,11 @@ lip install "github.com/MRUIAW/BoatHUD#client@1.0.0"
 
 | 路径 | 用途 |
 | --- | --- |
-| `mods/BedrockBoatHUD/config/config.json` | 配置；首次加载时生成 |
-| `mods/BedrockBoatHUD/lang/en.json` | 英文界面文本 |
-| `mods/BedrockBoatHUD/lang/zh_CN.json` | 简体中文文本（`zh-Hans` / Minecraft `zh_CN`） |
-| `mods/BedrockBoatHUD/data/telemetry/` | 带时间戳的遥测 CSV |
-| `mods/BedrockBoatHUD/config/checkpoints.csv` | 默认检查点文件 |
+| `mods/BoatHUD/config/config.json` | 配置；首次加载时生成 |
+| `mods/BoatHUD/lang/en.json` | 英文界面文本 |
+| `mods/BoatHUD/lang/zh_CN.json` | 简体中文文本（`zh-Hans` / Minecraft `zh_CN`） |
+| `mods/BoatHUD/data/telemetry/` | 带时间戳的遥测 CSV |
+| `mods/BoatHUD/config/checkpoints.csv` | 默认检查点文件 |
 
 手工修改 JSON 前退出游戏，也可以直接使用设置菜单。速度单位支持 `ms`、`kmh`、`mph`、`knots`，加速度单位支持 `g`、`mss`。高级镜头参数为 `cameraAggressiveness`（默认 60 m/s）、`cameraSmoothing`（每 Tick 保留比例 0.45）、`cameraMinimumSpeed`（0.5 m/s）。配置格式版本 3 与模组发布版本相互独立。
 
@@ -102,7 +105,7 @@ xmake -y
 pwsh -File scripts/Package-Release.ps1
 ```
 
-模组目录输出到 `bin/BedrockBoatHUD/`，校验后的 ZIP 输出到 `build/release/`。[CHANGELOG.md](CHANGELOG.md) 记录发布变更；[AGENTS.md](AGENTS.md) 为后续维护者提供规范、版本升级、相机符号、菜单鼠标及发布流程说明。[DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) 保留开发与验收历史，其中早期方案可能已被后续版本替代。
+模组目录输出到 `bin/BoatHUD/`，校验后的 ZIP 输出到 `build/release/`。[CHANGELOG.md](CHANGELOG.md) 记录发布变更；[AGENTS.md](AGENTS.md) 为后续维护者提供规范、版本升级、相机符号、菜单鼠标及发布流程说明。[DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) 保留开发与验收历史，其中早期方案可能已被后续版本替代。
 
 ## 致谢与许可证
 

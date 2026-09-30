@@ -7,6 +7,7 @@
 - 仅 Windows x64 客户端模组；目标 Minecraft Bedrock **1.26.51.01**，LeviLamina **26.51.x**，已构建/验收的 LL 为 **26.51.5**。
 - C++20，Clang-CL / LLVM 22，Visual Studio C++ Build Tools、Windows SDK，XMake。
 - HUD 和设置使用 Bedrock 原生 UI 图元与一个最小 `BaseScreen`。不需要资源包。
+- 用户最终指定实际安装目录为 `mods/BoatHUD/`；构建 target、清单 name、DLL 和 ZIP 顶层目录均为 `BoatHUD`。唯一的 ZIP 文件名仍为 `BedrockBoatHUD-client-windows-x64.zip`，这是用户单独保留的下载文件名，不是安装目录或兼容包。
 - 默认 Race、packed 速度条、km/h、g、图标与轨迹；镜头辅助、隐藏原版 HUD、CSV、检查点默认关闭。
 - 用户已明确要求自绘菜单而非表单、原生鼠标光标、隐藏原版 HUD 仅放菜单中。
 - 用户已确认相机第一/第三人称及高低速正常、手柄正常、G 表正常、CSV 可用、菜单光标正常、最终箭头修复正常。真实赛道检查点、多分辨率及全部生命周期组合没有完整验收记录，不要声称全部实机测试通过。
@@ -112,8 +113,8 @@ pwsh -File scripts/Package-Release.ps1
 1. 更新 `tooth.json.version` 与两份 README 的安装版本/兼容说明，添加 `CHANGELOG.md` 的 `## [版本] - YYYY-MM-DD`，日期使用维护者所在时区。
 2. 完成构建、打包、检查后提交相关源代码与文档，推送到 GitHub。不要提交构建输出或 force-push。
 3. 推送 **`v` 前缀语义版本标签**（例如 `v1.0.0`）。本仓库扩展模板流程：标签触发客户端 release 工作流，构建成功后自动从 changelog 创建公开 Release 并上传 ZIP、tooth 与 SHA256；也支持手工创建 published Release。
-4. 确认 Actions 完成，GitHub Release 实际有 `BedrockBoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BedrockBoatHUD/`、安装位置 `mods/BedrockBoatHUD/` 必须完全一致。展示名为 BoatHUD，不能因此错误改写实际安装目录或 config/data 保留路径。用户明确不要兼容 ZIP，且选择保留原文件名作为唯一的新编译包、仍发布 1.0.0。不要添加第二个 ZIP 或别名；同版本不修改已缓存 lip 清单的下载 URL，必须改文件名时发布新版本。
-5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。
+4. 确认 Actions 完成，GitHub Release 实际有 `BedrockBoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BoatHUD/`、安装位置 `mods/BoatHUD/` 必须完全一致。config/data 保留路径也必须是 `mods/BoatHUD/`。用户明确不要兼容 ZIP，且选择保留原文件名作为唯一的新编译包、仍发布 1.0.0，之后又明确将实际安装目录改为 BoatHUD。不要添加第二个 ZIP 或别名，也不自动迁移旧安装。
+5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。正常新版本验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。**本次同版本重发的原 v1.0.0 Git/Go 清单仍可能被缓存为旧目录**，不能用修改 main 清单来声称旧命令能获得新目录。验证新下载的 ZIP：`lip install "./BedrockBoatHUD-client-windows-x64.zip#client"`，使用 ZIP 内的最新 tooth 清单；必须保留 `#client`，README 对本次重发采用这一安装方法。资产 URL 的 `?revision=20261001-boathud` 避免旧下载缓存，文件名和 Release 资产仍只有一个。再重发不同内容时按需变更 revision，并同步打包 URL 校验；未来正常新版本不必复用此日期。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。未来正常新版本可恢复版本化仓库安装命令。
 6. `preserve_files` 保护 config/data。发布时不塞进维护者的真实配置、日志、遥测、赛道文件或原项目纹理。保留 changelog/双语文档及示例。
 
 CI 使用仓库 `GITHUB_TOKEN` 的 `contents: write` 发布，无需在仓库保存个人 token。Release ZIP、tooth、清单版本一致后，才能声称 lip 可安装；只有标签或 workflow 已排队时不能声称发布完成。

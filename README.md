@@ -29,11 +29,14 @@ Download [LeviLauncher](https://github.com/LiteLDev/LeviLauncher), open its `Bed
 Close Minecraft before installing or updating. With [lip](https://lip.levimc.org/), run this in the LeviLamina game instance directory:
 
 ```powershell
-lip install "github.com/MRUIAW/BoatHUD#client@1.0.0"
+Invoke-WebRequest "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v1.0.0/BedrockBoatHUD-client-windows-x64.zip" -OutFile BedrockBoatHUD-client-windows-x64.zip
+lip install ".\BedrockBoatHUD-client-windows-x64.zip#client"
 ```
 ### Manual installation
 
-Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BedrockBoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. Only one freshly built client archive is published.
+Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. Only one freshly built client archive is published.
+
+This 1.0.0 rebuild renames the installed mod to `BoatHUD`. Install from a freshly downloaded ZIP as above: the original `v1.0.0` Git/lip manifest may be cached with the old directory. With Minecraft closed, move an existing `mods/BedrockBoatHUD` installation outside `mods` before loading the new mod; old settings are not migrated automatically.
 
 Start the game and take the driver's seat in a boat. BoatHUD appears while you are driving; passengers do not receive a driving HUD.
 
@@ -68,11 +71,11 @@ Paths are relative to the game instance:
 
 | Path | Purpose |
 | --- | --- |
-| `mods/BedrockBoatHUD/config/config.json` | Settings; created on first load |
-| `mods/BedrockBoatHUD/lang/en.json` | English UI text |
-| `mods/BedrockBoatHUD/lang/zh_CN.json` | Simplified Chinese UI text (`zh-Hans` / Minecraft `zh_CN`) |
-| `mods/BedrockBoatHUD/data/telemetry/` | Timestamped telemetry CSV files |
-| `mods/BedrockBoatHUD/config/checkpoints.csv` | Default checkpoint file |
+| `mods/BoatHUD/config/config.json` | Settings; created on first load |
+| `mods/BoatHUD/lang/en.json` | English UI text |
+| `mods/BoatHUD/lang/zh_CN.json` | Simplified Chinese UI text (`zh-Hans` / Minecraft `zh_CN`) |
+| `mods/BoatHUD/data/telemetry/` | Timestamped telemetry CSV files |
+| `mods/BoatHUD/config/checkpoints.csv` | Default checkpoint file |
 
 Edit JSON with Minecraft closed, or use the settings menu. Available speed units are `ms`, `kmh`, `mph`, and `knots`; acceleration units are `g` and `mss`. Advanced camera settings are `cameraAggressiveness` (default 60 m/s), `cameraSmoothing` (0.45 retained per tick), and `cameraMinimumSpeed` (0.5 m/s). Configuration schema version 3 is independent of the mod's release version.
 
@@ -102,7 +105,7 @@ xmake -y
 pwsh -File scripts/Package-Release.ps1
 ```
 
-The mod directory is generated in `bin/BedrockBoatHUD/`, and the validated ZIP in `build/release/`. [CHANGELOG.md](CHANGELOG.md) records releases. [AGENTS.md](AGENTS.md) is the maintenance handoff, covering coding rules, version upgrades, camera symbols, screen/mouse behaviour, and publishing. [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) preserves development and acceptance history; earlier sections may describe superseded implementations.
+The mod directory is generated in `bin/BoatHUD/`, and the validated ZIP in `build/release/`. [CHANGELOG.md](CHANGELOG.md) records releases. [AGENTS.md](AGENTS.md) is the maintenance handoff, covering coding rules, version upgrades, camera symbols, screen/mouse behaviour, and publishing. [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) preserves development and acceptance history; earlier sections may describe superseded implementations.
 
 ## Credits and license
 

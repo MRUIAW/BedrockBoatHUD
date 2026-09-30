@@ -16,7 +16,7 @@ if not has_config("vs_runtime") then
     set_runtimes("MD")
 end
 
-target("BedrockBoatHUD")
+target("BoatHUD")
     add_rules("@levibuildscript/linkrule")
     add_rules("@levibuildscript/modpacker")
     on_load(function (target)
@@ -52,7 +52,7 @@ target("BedrockBoatHUD")
     add_files("src/**.cpp")
     add_includedirs("src")
     after_build(function ()
-        local output = path.join(os.projectdir(), "bin", "BedrockBoatHUD", "lang")
+        local output = path.join(os.projectdir(), "bin", "BoatHUD", "lang")
         os.mkdir(output)
         os.cp(path.join(os.projectdir(), "lang", "en.json"), output)
         os.cp(path.join(os.projectdir(), "lang", "zh_CN.json"), output)

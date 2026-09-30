@@ -5,7 +5,7 @@
 遥测文件保存在：
 
 ```text
-<游戏实例>/mods/BedrockBoatHUD/data/telemetry/<日期_时间>.csv
+<游戏实例>/mods/BoatHUD/data/telemetry/<日期_时间>.csv
 ```
 
 驾驶船时在设置菜单打开 `Telemetry CSV` 会立即创建文件并开始逐 Tick 记录。关闭该选项、下船、退出世界或停用模组时，文件会刷新并关闭。
@@ -69,6 +69,6 @@ reference_time_seconds,reference_speed_mps,normal_x,normal_z,plane_offset
 plane_offset = x * normal_x + z * normal_z
 ```
 
-把该行的 `time_seconds`、`speed_mps` 和计算出的平面参数写入 `mods/BedrockBoatHUD/config/checkpoints.csv`。比赛时只有从法平面的负侧穿到正侧才会触发，因此法向量必须指向赛道前进方向。
+把该行的 `time_seconds`、`speed_mps` 和计算出的平面参数写入 `mods/BoatHUD/config/checkpoints.csv`。比赛时只有从法平面的负侧穿到正侧才会触发，因此法向量必须指向赛道前进方向。
 
 当前仍需手工选择检查点。后续可以增加“从遥测轨迹生成检查点”的转换工具，以及严格复刻 Extended 11 列表头的兼容导出模式。

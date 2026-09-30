@@ -24,20 +24,20 @@
         {
           "type": "zip",
           "urls": [
-            "https://{{tooth}}/releases/download/v{{version}}/BedrockBoatHUD-client-windows-x64.zip"
+            "https://{{tooth}}/releases/download/v{{version}}/BedrockBoatHUD-client-windows-x64.zip?revision=20261001-boathud"
           ],
           "placements": [
             {
               "type": "dir",
-              "src": "BedrockBoatHUD/",
-              "dest": "mods/BedrockBoatHUD/"
+              "src": "BoatHUD/",
+              "dest": "mods/BoatHUD/"
             }
           ]
         }
       ],
       "preserve_files": [
-        "mods/BedrockBoatHUD/config/**",
-        "mods/BedrockBoatHUD/data/**"
+        "mods/BoatHUD/config/**",
+        "mods/BoatHUD/data/**"
       ],
       "remove_files": [],
       "scripts": {

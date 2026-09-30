@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rebuilt and republished on 2026-10-01 as `v1.0.0-mc26.5x`; retain the `v1.0.0` tag and runtime version.
 - Use the BoatHUD package display name/icon and publish only one freshly rebuilt `BedrockBoatHUD-client-windows-x64.zip`, keeping the existing 1.0.0 package URL; align preserved config/data paths with the actual install directory.
+- Rename the native mod/DLL and installation directory to `BoatHUD` / `mods/BoatHUD/`; no legacy installation or settings migration. Install this same-version rebuild from its freshly downloaded ZIP to use the current manifest rather than a cached Git manifest.
+- Give the asset URL a rebuild revision query to avoid reusing the previous lip asset cache; the release still contains a single ZIP with the original filename.
 - Standardize future release titles as `v<mod-version>-mc<game-series>`, configured in `release-config.json`.
 - Promote the accepted 0.2.22 development build to 1.0.0 without changing its driving behaviour.
 - Use the package manifest as the release-version source and publish only the Windows x64 client variant.
