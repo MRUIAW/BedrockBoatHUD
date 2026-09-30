@@ -4,12 +4,14 @@
   "tooth": "github.com/MRUIAW/BedrockBoatHUD",
   "version": "1.0.0",
   "info": {
-    "name": "Bedrock BoatHUD",
+    "name": "BoatHUD",
     "description": "A racing HUD and driving assistant for boats on LeviLamina clients.",
     "tags": [
       "platform:levilamina",
-      "type:mod"
-    ]
+      "type:mod",
+      "hud"
+    ],
+    "avatar_url": "https://raw.githubusercontent.com/MRUIAW/BedrockBoatHUD/refs/heads/main/pack_icon.png"
   },
   "variants": [
     {
