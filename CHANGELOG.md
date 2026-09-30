@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-01
+
+### Fixed
+
+- Publish a new version tag containing the current BoatHUD manifest, so repository-based lip installation uses `mods/BoatHUD/` rather than the original 1.0.0 manifest's obsolete directory.
+- Keep the native mod name, DLL, archive directory, installation path, and preserved configuration/data paths consistent with `BoatHUD`.
+
+### Changed
+
+- Restore the one-line, versioned lip installation command in both READMEs and clarify that LeviLauncher discovery requires registry inclusion.
+- Remove the temporary same-version asset revision query; 1.0.1 has its own release download URL.
+- Publish as `v1.0.1-mc26.5x` with one `BedrockBoatHUD-client-windows-x64.zip`, package metadata, and SHA256 checksums.
+- Keep the accepted HUD, camera, input, and settings behaviour unchanged; configuration schema remains 3 and telemetry schema remains 1.
+
 ## [1.0.0] - 2026-09-30
 
 ### Added
@@ -41,5 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Format Race acceleration values independently with two decimal places below magnitude 10 and one at or above 10.
 - Prevent conflicting digital and analog input representations from lighting both arrows when only one direction is pressed.
 
-[Unreleased]: https://github.com/MRUIAW/BedrockBoatHUD/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/MRUIAW/BedrockBoatHUD/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/MRUIAW/BedrockBoatHUD/releases/tag/v1.0.1
 [1.0.0]: https://github.com/MRUIAW/BedrockBoatHUD/releases/tag/v1.0.0
