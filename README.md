@@ -33,7 +33,7 @@ lip install "github.com/MRUIAW/BedrockBoatHUD#client@1.0.0"
 ```
 ### Manual installation
 
-Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BedrockBoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating.
+Alternatively, download `BoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BedrockBoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. The old ZIP name remains a compatibility alias.
 
 Start the game and take the driver's seat in a boat. BoatHUD appears while you are driving; passengers do not receive a driving HUD.
 

@@ -6,12 +6,24 @@ on:
       - 'v*'
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to create or update'
+        required: true
+        default: 'v1.0.0'
+        type: string
+      source_ref:
+        description: 'Source ref to rebuild; use the tag normally, main for an authorized republish'
+        required: true
+        default: 'v1.0.0'
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.event.release.tag_name || github.ref_name }}
+  group: release-${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -20,12 +32,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.release.tag_name || github.ref_name }}
+          ref: ${{ inputs.source_ref || github.event.release.tag_name || github.ref_name }}
 
       - name: Validate release tag
         shell: pwsh
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
         run: |
           $package = Get-Content -Raw tooth.json | ConvertFrom-Json
           if ($env:RELEASE_TAG -cne "v$($package.version)") {
@@ -50,18 +62,19 @@ jobs:
         run: xmake f -a x64 -m release -p windows --target_type=client -y
 
       - name: Build
-        run: xmake -y
+        run: xmake -r -y
 
       - name: Package and verify
         shell: pwsh
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
         run: ./scripts/Package-Release.ps1 -Tag $env:RELEASE_TAG
 
       - uses: actions/upload-artifact@v7
         with:
-          name: BedrockBoatHUD-release-${{ github.event.release.tag_name || github.ref_name }}
+          name: BedrockBoatHUD-release-${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
           path: |
+            build/release/BoatHUD-client-windows-x64.zip
             build/release/BedrockBoatHUD-client-windows-x64.zip
             build/release/tooth.json
             build/release/SHA256SUMS.txt
@@ -71,14 +84,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
         run: |
+          $releaseTitle = (Get-Content -Raw build/release/release-title.txt).Trim()
           gh release view $env:RELEASE_TAG *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $env:RELEASE_TAG --verify-tag --title "Bedrock BoatHUD $env:RELEASE_TAG" --notes-file build/release/release-notes.md
+            gh release create $env:RELEASE_TAG --verify-tag --title $releaseTitle --notes-file build/release/release-notes.md
           } else {
-            gh release edit $env:RELEASE_TAG --notes-file build/release/release-notes.md
+            gh release edit $env:RELEASE_TAG --title $releaseTitle --notes-file build/release/release-notes.md
           }
           if ($LASTEXITCODE -ne 0) { throw 'Release creation or notes update failed' }
-          gh release upload $env:RELEASE_TAG build/release/BedrockBoatHUD-client-windows-x64.zip build/release/tooth.json build/release/SHA256SUMS.txt --clobber
+          gh release upload $env:RELEASE_TAG build/release/BoatHUD-client-windows-x64.zip build/release/BedrockBoatHUD-client-windows-x64.zip build/release/tooth.json build/release/SHA256SUMS.txt --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed' }

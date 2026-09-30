@@ -8,6 +8,11 @@ Set-StrictMode -Version Latest
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $package = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'tooth.json') | ConvertFrom-Json
 $version = $package.version
+$releaseConfig = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'release-config.json') | ConvertFrom-Json
+if ($releaseConfig.minecraftSeries -notmatch '^\d+\.\d+x?$') {
+    throw 'Invalid Minecraft series label in release-config.json'
+}
+$releaseTitle = "v$version-mc$($releaseConfig.minecraftSeries)"
 if ($version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') {
     throw "Invalid release version: $version"
 }
@@ -55,7 +60,7 @@ foreach ($file in $relativeFiles) {
     Copy-Item -LiteralPath (Join-Path $modRoot $file) -Destination (Join-Path $stagedMod $file)
 }
 $documents = @(
-    'README.md', 'README.zh-CN.md', 'CHANGELOG.md', 'LICENSE', 'tooth.json', 'AGENTS.md',
+    'README.md', 'README.zh-CN.md', 'CHANGELOG.md', 'LICENSE', 'tooth.json', 'release-config.json', 'pack_icon.png', 'AGENTS.md',
     'TELEMETRY_GUIDE.md', 'DEVELOPMENT_STATUS.md', 'COMBINED_BOATHUD_FEATURE_SPEC.md',
     'LEVILAMINA_BOATHUD_FEASIBILITY.md', 'PROJECT_IMPLEMENTATION_LOGIC.md'
 )
@@ -64,7 +69,7 @@ foreach ($file in $documents) {
 }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples') -Destination (Join-Path $stagingRoot 'examples') -Recurse
 
-$archiveName = 'BedrockBoatHUD-client-windows-x64.zip'
+$archiveName = 'BoatHUD-client-windows-x64.zip'
 $archivePath = Join-Path $releaseRoot $archiveName
 $assetUrl = $package.variants[0].assets[0].urls[0].Replace('{{tooth}}', $package.tooth).Replace('{{version}}', $version)
 if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/$archiveName") {
@@ -73,6 +78,11 @@ if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v
 $placement = $package.variants[0].assets[0].placements[0]
 if ($placement.src -cne 'BedrockBoatHUD/' -or $placement.dest -cne 'mods/BedrockBoatHUD/') {
     throw 'lip placement does not match the archive layout'
+}
+foreach ($directory in @('config', 'data')) {
+    if ($package.variants[0].preserve_files -cnotcontains "mods/BedrockBoatHUD/$directory/**") {
+        throw "lip does not preserve the installed $directory directory"
+    }
 }
 Compress-Archive -Path (Join-Path $stagingRoot '*') -DestinationPath $archivePath -Force
 
@@ -90,12 +100,19 @@ try {
     $zip.Dispose()
 }
 $hash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
-[System.IO.File]::WriteAllText((Join-Path $releaseRoot 'SHA256SUMS.txt'), "$hash  $archiveName`n")
+# Keep the immutable v1.0.0 tooth manifest's original download URL working.
+$legacyArchiveName = 'BedrockBoatHUD-client-windows-x64.zip'
+Copy-Item -LiteralPath $archivePath -Destination (Join-Path $releaseRoot $legacyArchiveName) -Force
+[System.IO.File]::WriteAllText((Join-Path $releaseRoot 'SHA256SUMS.txt'), "$hash  $archiveName`n$hash  $legacyArchiveName`n")
+[System.IO.File]::WriteAllText((Join-Path $releaseRoot 'release-title.txt'), $releaseTitle + "`n")
+$sourceCommit = (& git -C $projectRoot rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Cannot determine release source commit' }
 [System.IO.File]::WriteAllText(
     (Join-Path $releaseRoot 'release-notes.md'),
-    $releaseSection.Groups['notes'].Value.Trim() + "`n"
+    $releaseSection.Groups['notes'].Value.Trim() + "`n`nSource commit: [$sourceCommit](https://github.com/MRUIAW/BedrockBoatHUD/commit/$sourceCommit)`n"
 )
 Copy-Item -LiteralPath (Join-Path $projectRoot 'tooth.json') -Destination (Join-Path $releaseRoot 'tooth.json') -Force
 Write-Output "Validated release: v$version"
+Write-Output "Release title: $releaseTitle"
 Write-Output "Archive: $archivePath"
 Write-Output "SHA256: $hash"

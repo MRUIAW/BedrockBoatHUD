@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Rebuilt and republished on 2026-10-01 as `v1.0.0-mc26.5x`; retain the `v1.0.0` tag and runtime version.
+- Use the BoatHUD package display name/icon and `BoatHUD-client-windows-x64.zip`, retaining the previous ZIP filename as a compatibility alias; align preserved config/data paths with the actual install directory.
+- Standardize future release titles as `v<mod-version>-mc<game-series>`, configured in `release-config.json`.
 - Promote the accepted 0.2.22 development build to 1.0.0 without changing its driving behaviour.
 - Use the package manifest as the release-version source and publish only the Windows x64 client variant.
 - Keep the configuration schema at version 3; older progressive/custom speed-bar settings migrate to packed.

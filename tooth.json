@@ -36,8 +36,8 @@
         }
       ],
       "preserve_files": [
-        "mods/BoatHUD/config/**",
-        "mods/BoatHUD/data/**"
+        "mods/BedrockBoatHUD/config/**",
+        "mods/BedrockBoatHUD/data/**"
       ],
       "remove_files": [],
       "scripts": {

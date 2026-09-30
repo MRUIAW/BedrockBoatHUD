@@ -33,7 +33,7 @@ lip install "github.com/MRUIAW/BedrockBoatHUD#client@1.0.0"
 ```
 ### 手动安装
 
-从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BedrockBoatHUD-client-windows-x64.zip`，将压缩包中的 `BedrockBoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。
+从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BoatHUD-client-windows-x64.zip`，将压缩包中的 `BedrockBoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。Release 标题统一为 `v<模组版本>-mc<游戏系列>`，当前为 `v1.0.0-mc26.5x`；标题不扩大上述实际兼容范围。旧 ZIP 名称保留为兼容下载入口。
 
 启动游戏并坐上船的驾驶位即可看到 HUD；作为乘客时不显示驾驶 HUD。
 

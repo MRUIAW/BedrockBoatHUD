@@ -112,10 +112,14 @@ pwsh -File scripts/Package-Release.ps1
 1. 更新 `tooth.json.version` 与两份 README 的安装版本/兼容说明，添加 `CHANGELOG.md` 的 `## [版本] - YYYY-MM-DD`，日期使用维护者所在时区。
 2. 完成构建、打包、检查后提交相关源代码与文档，推送到 GitHub。不要提交构建输出或 force-push。
 3. 推送 **`v` 前缀语义版本标签**（例如 `v1.0.0`）。本仓库扩展模板流程：标签触发客户端 release 工作流，构建成功后自动从 changelog 创建公开 Release 并上传 ZIP、tooth 与 SHA256；也支持手工创建 published Release。
-4. 确认 Actions 完成，GitHub Release 实际有 `BedrockBoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BedrockBoatHUD/`、安装位置 `mods/BedrockBoatHUD/` 必须完全一致。
+4. 确认 Actions 完成，GitHub Release 实际有 `BoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BedrockBoatHUD/`、安装位置 `mods/BedrockBoatHUD/` 必须完全一致。展示名/ZIP 名可为 BoatHUD，不能因此错误改写实际 config/data 保留路径。原 `BedrockBoatHUD-client-windows-x64.zip` 保留为同内容兼容入口，避免已有 v1.0.0 清单失效。
 5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。
 6. `preserve_files` 保护 config/data。发布时不塞进维护者的真实配置、日志、遥测、赛道文件或原项目纹理。保留 changelog/双语文档及示例。
 
 CI 使用仓库 `GITHUB_TOKEN` 的 `contents: write` 发布，无需在仓库保存个人 token。Release ZIP、tooth、清单版本一致后，才能声称 lip 可安装；只有标签或 workflow 已排队时不能声称发布完成。
+
+用户于 2026-10-01 指定：以后 Release **标题**统一为 `v<模组版本>-mc<游戏系列>`，例如 `v1.0.0-mc26.5x`。模组版本仍来自 tooth；游戏系列显式维护在 `release-config.json.minecraftSeries`，由打包脚本生成 `release-title.txt`，创建和更新 Release 时都使用它。升级游戏版本时同步修改此字段；它只是展示标签，不能据此放宽未经测试的兼容范围。Git 标签仍为 `v1.0.0`，不把 `-mc26.5x` 写进 tooth.version 或 tag，以免改变 lip 版本发现。
+
+已获授权的原版本重发：使用 Release 的手动工作流，`tag` 为原版本标签、`source_ref` 为经过检查的新源码提交 SHA；完整重编译并覆盖原 Release 资产，不删 Release、不移动标签、不 force-push。正常首次发布 `source_ref` 应使用该 tag。同版本资产覆盖后，已安装的 lip 实例或下载缓存可能仍保留旧文件，不能把版本列表不变当作重编译失败。
 
 开发历史见 `DEVELOPMENT_STATUS.md`。规格/可行性/原作分析是历史资料，遇到冲突以当前源码、用户最新验收要求和本指南为准，保留历史但不要再实施已撤回方案。
