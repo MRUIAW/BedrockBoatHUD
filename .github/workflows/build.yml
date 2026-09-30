@@ -48,7 +48,6 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}-${{ github.sha }}-client-windows-x64
           path: |
-            build/release/BoatHUD-client-windows-x64.zip
             build/release/BedrockBoatHUD-client-windows-x64.zip
             build/release/tooth.json
             build/release/SHA256SUMS.txt

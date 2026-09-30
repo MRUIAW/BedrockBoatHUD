@@ -69,7 +69,7 @@ foreach ($file in $documents) {
 }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples') -Destination (Join-Path $stagingRoot 'examples') -Recurse
 
-$archiveName = 'BoatHUD-client-windows-x64.zip'
+$archiveName = 'BedrockBoatHUD-client-windows-x64.zip'
 $archivePath = Join-Path $releaseRoot $archiveName
 $assetUrl = $package.variants[0].assets[0].urls[0].Replace('{{tooth}}', $package.tooth).Replace('{{version}}', $version)
 if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/$archiveName") {
@@ -100,10 +100,7 @@ try {
     $zip.Dispose()
 }
 $hash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
-# Keep the immutable v1.0.0 tooth manifest's original download URL working.
-$legacyArchiveName = 'BedrockBoatHUD-client-windows-x64.zip'
-Copy-Item -LiteralPath $archivePath -Destination (Join-Path $releaseRoot $legacyArchiveName) -Force
-[System.IO.File]::WriteAllText((Join-Path $releaseRoot 'SHA256SUMS.txt'), "$hash  $archiveName`n$hash  $legacyArchiveName`n")
+[System.IO.File]::WriteAllText((Join-Path $releaseRoot 'SHA256SUMS.txt'), "$hash  $archiveName`n")
 [System.IO.File]::WriteAllText((Join-Path $releaseRoot 'release-title.txt'), $releaseTitle + "`n")
 $sourceCommit = (& git -C $projectRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot determine release source commit' }

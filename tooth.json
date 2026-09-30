@@ -24,7 +24,7 @@
         {
           "type": "zip",
           "urls": [
-            "https://{{tooth}}/releases/download/v{{version}}/BoatHUD-client-windows-x64.zip"
+            "https://{{tooth}}/releases/download/v{{version}}/BedrockBoatHUD-client-windows-x64.zip"
           ],
           "placements": [
             {

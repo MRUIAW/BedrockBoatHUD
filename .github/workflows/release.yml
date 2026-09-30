@@ -74,7 +74,6 @@ jobs:
         with:
           name: BedrockBoatHUD-release-${{ inputs.tag || github.event.release.tag_name || github.ref_name }}
           path: |
-            build/release/BoatHUD-client-windows-x64.zip
             build/release/BedrockBoatHUD-client-windows-x64.zip
             build/release/tooth.json
             build/release/SHA256SUMS.txt
@@ -94,5 +93,5 @@ jobs:
             gh release edit $env:RELEASE_TAG --title $releaseTitle --notes-file build/release/release-notes.md
           }
           if ($LASTEXITCODE -ne 0) { throw 'Release creation or notes update failed' }
-          gh release upload $env:RELEASE_TAG build/release/BoatHUD-client-windows-x64.zip build/release/BedrockBoatHUD-client-windows-x64.zip build/release/tooth.json build/release/SHA256SUMS.txt --clobber
+          gh release upload $env:RELEASE_TAG build/release/BedrockBoatHUD-client-windows-x64.zip build/release/tooth.json build/release/SHA256SUMS.txt --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed' }

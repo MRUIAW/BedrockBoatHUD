@@ -112,7 +112,7 @@ pwsh -File scripts/Package-Release.ps1
 1. 更新 `tooth.json.version` 与两份 README 的安装版本/兼容说明，添加 `CHANGELOG.md` 的 `## [版本] - YYYY-MM-DD`，日期使用维护者所在时区。
 2. 完成构建、打包、检查后提交相关源代码与文档，推送到 GitHub。不要提交构建输出或 force-push。
 3. 推送 **`v` 前缀语义版本标签**（例如 `v1.0.0`）。本仓库扩展模板流程：标签触发客户端 release 工作流，构建成功后自动从 changelog 创建公开 Release 并上传 ZIP、tooth 与 SHA256；也支持手工创建 published Release。
-4. 确认 Actions 完成，GitHub Release 实际有 `BoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BedrockBoatHUD/`、安装位置 `mods/BedrockBoatHUD/` 必须完全一致。展示名/ZIP 名可为 BoatHUD，不能因此错误改写实际 config/data 保留路径。原 `BedrockBoatHUD-client-windows-x64.zip` 保留为同内容兼容入口，避免已有 v1.0.0 清单失效。
+4. 确认 Actions 完成，GitHub Release 实际有 `BedrockBoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BedrockBoatHUD/`、安装位置 `mods/BedrockBoatHUD/` 必须完全一致。展示名为 BoatHUD，不能因此错误改写实际安装目录或 config/data 保留路径。用户明确不要兼容 ZIP，且选择保留原文件名作为唯一的新编译包、仍发布 1.0.0。不要添加第二个 ZIP 或别名；同版本不修改已缓存 lip 清单的下载 URL，必须改文件名时发布新版本。
 5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。
 6. `preserve_files` 保护 config/data。发布时不塞进维护者的真实配置、日志、遥测、赛道文件或原项目纹理。保留 changelog/双语文档及示例。
 

@@ -29,11 +29,11 @@ Download [LeviLauncher](https://github.com/LiteLDev/LeviLauncher), open its `Bed
 Close Minecraft before installing or updating. With [lip](https://lip.levimc.org/), run this in the LeviLamina game instance directory:
 
 ```powershell
-lip install "github.com/MRUIAW/BedrockBoatHUD#client@1.0.0"
+lip install "github.com/MRUIAW/BoatHUD#client@1.0.0"
 ```
 ### Manual installation
 
-Alternatively, download `BoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BedrockBoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. The old ZIP name remains a compatibility alias.
+Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BedrockBoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. Only one freshly built client archive is published.
 
 Start the game and take the driver's seat in a boat. BoatHUD appears while you are driving; passengers do not receive a driving HUD.
 
