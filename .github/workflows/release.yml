@@ -1,94 +1,84 @@
+name: Release
+
 on:
+  push:
+    tags:
+      - 'v*'
   release:
-    types:
-      - published
-  
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
-  build:
+  release:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        target_type:
-          - server
-          - client
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
+
+      - name: Validate release tag
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        run: |
+          $package = Get-Content -Raw tooth.json | ConvertFrom-Json
+          if ($env:RELEASE_TAG -cne "v$($package.version)") {
+            throw 'Release tag must match tooth.json version with a v prefix'
+          }
 
       - uses: xmake-io/github-action-setup-xmake@v1
-        # with:
-        #   xmake-version: branch@master
 
       - uses: actions/cache@v6
         with:
-          path: |
-            ~/AppData/Local/.xmake
-          key: xmake-${{ hashFiles('xmake.lua') }}
+          path: ~/AppData/Local/.xmake
+          key: xmake-release-client-${{ hashFiles('xmake.lua', 'tooth.json') }}
           restore-keys: |
-            xmake-
+            xmake-release-client-
 
       - name: Setup LLVM
         uses: ZhongRuoyu/setup-llvm@v0
         with:
           llvm-version: 22
 
-      - run: |
-          xmake repo -u
+      - name: Configure client release
+        run: xmake f -a x64 -m release -p windows --target_type=client -y
 
-      - run: |
-          xmake f -a x64 -m release -p windows --target_type=${{ matrix.target_type }} -y
+      - name: Build
+        run: xmake -y
 
-      - run: |
-          xmake -w -y
+      - name: Package and verify
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        run: ./scripts/Package-Release.ps1 -Tag $env:RELEASE_TAG
 
       - uses: actions/upload-artifact@v7
         with:
-          name: ${{ github.event.repository.name }}-${{ github.sha }}-${{ matrix.target_type }}-windows-x64
+          name: BedrockBoatHUD-release-${{ github.event.release.tag_name || github.ref_name }}
           path: |
-            bin/
+            build/release/BedrockBoatHUD-client-windows-x64.zip
+            build/release/tooth.json
+            build/release/SHA256SUMS.txt
 
-  update-release-notes:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v3
-
-      - uses: softprops/action-gh-release@v3
-        with:
-          body: |
-            ${{ steps.extract-release-notes.outputs.release_notes }}
-
-  upload-to-release:
-    needs:
-      - build
-      - update-release-notes
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        target_type:
-          - server
-          - client
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/download-artifact@v8
-        with:
-          name: ${{ github.event.repository.name }}-${{ github.sha }}-${{ matrix.target_type }}-windows-x64
-          path: artifact
-
-      - run: |
-          cp CHANGELOG.md LICENSE README.md artifact/
-
-      - run: |
-          zip -r ../${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64.zip *
-        working-directory: artifact
-
-      - uses: softprops/action-gh-release@v3
-        with:
-          files: |
-            ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64.zip
+      - name: Publish release notes and assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        run: |
+          gh release view $env:RELEASE_TAG *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $env:RELEASE_TAG --verify-tag --title "Bedrock BoatHUD $env:RELEASE_TAG" --notes-file build/release/release-notes.md
+          } else {
+            gh release edit $env:RELEASE_TAG --notes-file build/release/release-notes.md
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Release creation or notes update failed' }
+          gh release upload $env:RELEASE_TAG build/release/BedrockBoatHUD-client-windows-x64.zip build/release/tooth.json build/release/SHA256SUMS.txt --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed' }

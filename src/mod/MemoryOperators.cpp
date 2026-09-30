@@ -1,5 +1,6 @@
-// This file will make your mod use LeviLamina's memory operators by default.
-// This improves the memory management of your mod and is recommended to use.
+// SPDX-License-Identifier: CC0-1.0
+
+// This translation unit opts the mod into LeviLamina's memory operators.
 
 #define LL_MEMORY_OPERATORS
 
