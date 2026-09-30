@@ -18,25 +18,25 @@ Camera assistance, vanilla HUD hiding, telemetry, and checkpoints are **off by d
 
 ## Installation
 
-Version 1.0.1 targets **Minecraft Bedrock 1.26.51.01**, **LeviLamina 26.51.x** (tested with 26.51.5), and **Windows x64 clients only**. Other game/loader series and dedicated servers are not supported.
+Version 1.0.0 targets **Minecraft Bedrock 1.26.51.01**, **LeviLamina 26.51.x** (tested with 26.51.5), and **Windows x64 clients only**. Other game/loader series and dedicated servers are not supported.
 
-### Through LeviLauncher (once listed)
+### Through LeviLauncher (recommended)
 
-Download [LeviLauncher](https://github.com/LiteLDev/LeviLauncher), open its `Bedrinth` browser, and search for “BoatHud”. Choose a version compatible with your game. The package must first be included in the [lipr registry](https://github.com/LiteLDev/lipr); publishing a GitHub release alone does not guarantee a listing. Until it is listed, use lip or manual installation below.
+Download [LeviLauncher](https://github.com/LiteLDev/LeviLauncher), open its `Bedrinth` browser, and search for “BoatHud”. Choose a version compatible with your game. A new release may take time to appear in the index; use lip or manual installation below if it is not listed yet.
 
 ### Through lip
 
 Close Minecraft before installing or updating. With [lip](https://lip.levimc.org/), run this in the LeviLamina game instance directory:
 
 ```powershell
-lip install "github.com/MRUIAW/BedrockBoatHUD#client@1.0.1"
+lip install "github.com/MRUIAW/BedrockBoatHUD#client"
 ```
 
 ### Manual installation
 
-Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.1-mc26.5x`); this label does not broaden the compatibility listed above. Only one freshly built client archive is published.
+Alternatively, download `BedrockBoatHUD-client-windows-x64.zip` from [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases), then copy its `BoatHUD` directory into your instance's `mods` directory. Keep existing `config` and `data` directories when updating. Release titles follow `v<mod-version>-mc<game-series>` (currently `v1.0.0-mc26.5x`); this label does not broaden the compatibility listed above. Only one freshly built client archive is published.
 
-The installation directory is `mods/BoatHUD/`. If an earlier installation uses `mods/BedrockBoatHUD`, close Minecraft and move that directory outside `mods` before loading the new mod; old settings are not migrated automatically.
+This 1.0.0 rebuild renames the installed mod to `BoatHUD`. The original `v1.0.0` Git/lip manifest may still use the old directory; if that happens, use the manual ZIP installation above. With Minecraft closed, move an existing `mods/BedrockBoatHUD` installation outside `mods` before loading the new mod; old settings are not migrated automatically.
 
 Start the game and take the driver's seat in a boat. BoatHUD appears while you are driving; passengers do not receive a driving HUD.
 
@@ -93,7 +93,7 @@ reference_time_seconds,reference_speed_mps,normal_x,normal_z,plane_offset
 
 A checkpoint plane is `x * normal_x + z * normal_z = plane_offset`; it triggers only when crossed from its negative side to its positive side. The first checkpoint establishes the lap start. Enable `circularTrack` in JSON to repeat the sequence. Checkpoints must be prepared manually; the feature is implemented but has not received the same real-track acceptance coverage as the HUD and camera.
 
-See [the telemetry guide (Chinese)](TELEMETRY_GUIDE.md) and [checkpoint example](examples/checkpoints.csv). HUD FPS measures this overlay's rendering, rather than an independent whole-game benchmark. Player-name display is reserved in configuration and is not rendered in 1.0.1.
+See [the telemetry guide (Chinese)](TELEMETRY_GUIDE.md) and [checkpoint example](examples/checkpoints.csv). HUD FPS measures this overlay's rendering, rather than an independent whole-game benchmark. Player-name display is reserved in configuration and is not rendered in 1.0.0.
 
 ## Building and maintenance
 

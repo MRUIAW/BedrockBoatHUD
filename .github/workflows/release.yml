@@ -11,12 +11,12 @@ on:
       tag:
         description: 'Existing release tag to create or update'
         required: true
-        default: 'v1.0.1'
+        default: 'v1.0.0'
         type: string
       source_ref:
         description: 'Source ref to rebuild; use the tag normally, main for an authorized republish'
         required: true
-        default: 'v1.0.1'
+        default: 'v1.0.0'
         type: string
 
 permissions:
