@@ -5,6 +5,8 @@
 
 基于 [LeviLamina](https://lamina.levimc.org/zh/) 的 Minecraft 基岩版客户端赛船 HUD，参考了 [Hibiii/BoatHud](https://github.com/Hibiii/BoatHud) 和 [BoatHUD Extended](https://github.com/jewtvet/boathud_extended) 的设计与驾驶体验。
 
+⚠️警告⚠️：**该项目的每一行代码都是由AI进行生成的。**如果你对AI生成的代码有顾虑，请勿使用。**这是一个实验AI能否vibe出简单模组+自己寻找+hook内存地址的项目**，repo的根目录下有关于AI开发过程的readme，若你不擅长C++却想做一些简单的mod的话，欢迎阅读。
+
 ## 功能
 
 - 自动识别普通船、运输船的驾驶者；默认使用 **Race（竞速）** 布局，也可切换 **Classic（经典）**、**Compact（紧凑）**。
