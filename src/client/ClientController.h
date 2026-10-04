@@ -71,11 +71,6 @@ private:
     /// @throws Nothing.
     [[nodiscard]] Actor* findDrivenBoat(IClientInstance& client) noexcept;
 
-    /// Writes a driving-state diagnostic only when the state changes.
-    /// @param state Human-readable state for the current local player and vehicle.
-    /// @throws Nothing.
-    void reportDrivingState(std::string state) noexcept;
-
     /// Ends the current session and restores vanilla HUD state.
     /// @param client Optional client used to restore GuiData immediately.
     /// @throws Nothing.
@@ -92,8 +87,6 @@ private:
     telemetry::TelemetryWriter          mTelemetryWriter;
     std::optional<session::BoatSession> mSession;
     std::vector<ll::event::ListenerPtr> mListeners;
-    std::vector<std::string>            mObservedScreenNames;
-    std::string                         mLastDrivingState;
     std::array<bool, 256>               mPressedKeys{};
     bool                                mTelemetryStartAttempted = false;
 };

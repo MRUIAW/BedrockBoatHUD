@@ -20,7 +20,7 @@
 
 ## 安装
 
-1.0.0 适用于 **Minecraft 基岩版 1.26.51.01**、**LeviLamina 26.51.x**（已测试 26.51.5），且**仅支持 Windows x64 客户端**。不支持其他游戏/加载器系列或专用服务端。
+1.0.1 适用于 **Minecraft 基岩版 1.26.51.01**、**LeviLamina 26.51.x**（已测试 26.51.5），且**仅支持 Windows x64 客户端**。不支持其他游戏/加载器系列或专用服务端。
 
 ### 通过 LeviLauncher 安装（推荐）
 
@@ -36,9 +36,9 @@ lip install "github.com/MRUIAW/BedrockBoatHUD#client"
 
 ### 手动安装
 
-从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BedrockBoatHUD-client-windows-x64.zip`，将压缩包中的 `BoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。Release 标题统一为 `v<模组版本>-mc<游戏系列>`，当前为 `v1.0.0-mc26.5x`；标题不扩大上述实际兼容范围。仅发布一份重新编译的客户端包。
+从 [Releases](https://github.com/MRUIAW/BedrockBoatHUD/releases) 下载 `BedrockBoatHUD-client-windows-x64.zip`，将压缩包中的 `BoatHUD` 文件夹放进实例的 `mods` 文件夹。更新时保留原有 `config` 和 `data` 文件夹。Release 标题统一为 `v<模组版本>-mc<游戏系列>`，当前为 `v1.0.1-mc26.5x`；标题不扩大上述实际兼容范围。仅发布一份重新编译的客户端包。
 
-本次 1.0.0 重编译将安装目录和模组标识改为 `BoatHUD`。原 `v1.0.0` 的 Git/lip 清单可能仍使用旧目录，若遇到此情况请使用上方的 ZIP 手动安装方法。安装前退出游戏，将已有的 `mods/BedrockBoatHUD` 移到 `mods` 目录之外，避免两个模组同时加载；旧配置不自动迁移。
+实际安装目录为 `mods/BoatHUD/`。安装前退出游戏，将早期版本的 `mods/BedrockBoatHUD` 移到 `mods` 目录之外，避免两个模组同时加载；旧配置不自动迁移。
 
 启动游戏并坐上船的驾驶位即可看到 HUD；作为乘客时不显示驾驶 HUD。
 
@@ -95,7 +95,7 @@ reference_time_seconds,reference_speed_mps,normal_x,normal_z,plane_offset
 
 检查点平面为 `x * normal_x + z * normal_z = plane_offset`，从负侧穿越到正侧才触发。第一点建立圈起点；在 JSON 中开启 `circularTrack` 可循环检查点序列。检查点需手工准备；功能已实现，但真实赛道验收覆盖还没有 HUD 和相机充分。
 
-详见 [遥测使用指南](TELEMETRY_GUIDE.md) 和 [检查点示例](examples/checkpoints.csv)。FPS 表示此 HUD 的渲染帧率，不是独立的整游戏性能测试；配置中的玩家名称显示字段为预留项，1.0.0 不绘制玩家名称。
+详见 [遥测使用指南](TELEMETRY_GUIDE.md) 和 [检查点示例](examples/checkpoints.csv)。FPS 表示此 HUD 的渲染帧率，不是独立的整游戏性能测试；配置中的玩家名称显示字段为预留项，1.0.1 不绘制玩家名称。
 
 ## 构建与维护
 

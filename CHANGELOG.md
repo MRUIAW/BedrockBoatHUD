@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-05
+
+### Changed
+
+- Remove development-only client join/exit, driving-state/session, shortcut, and UI screen/viewport logs.
+- Remove the diagnostic screen/state caches and per-update diagnostic string formatting that were used only by those logs.
+- Keep actionable warning/error messages, mod lifecycle messages, telemetry file paths, and checkpoint load summaries.
+- Publish as `v1.0.1-mc26.5x` with the existing single client ZIP filename and `mods/BoatHUD/` installation directory; remove the obsolete 1.0.0 asset revision query.
+- Keep HUD, camera, input, settings, and configuration/telemetry schemas unchanged.
+
 ## [1.0.0] - 2026-09-30
 
 ### Added
@@ -41,5 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Format Race acceleration values independently with two decimal places below magnitude 10 and one at or above 10.
 - Prevent conflicting digital and analog input representations from lighting both arrows when only one direction is pressed.
 
-[Unreleased]: https://github.com/MRUIAW/BedrockBoatHUD/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/MRUIAW/BedrockBoatHUD/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/MRUIAW/BedrockBoatHUD/releases/tag/v1.0.1
 [1.0.0]: https://github.com/MRUIAW/BedrockBoatHUD/releases/tag/v1.0.0

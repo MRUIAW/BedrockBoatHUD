@@ -1,6 +1,6 @@
 # Bedrock BoatHUD：维护 agent 交接指南
 
-本文件同时是仓库内 agent 的工作约定和维护手册。开始修改前完整阅读。发布版本以根目录 `tooth.json` 为准；当前稳定基线为 1.0.0，来自用户已验收的 0.2.22。配置 schema 仍为 3，遥测 schema 仍为 1，不能把它们改成发布版本号。
+本文件同时是仓库内 agent 的工作约定和维护手册。开始修改前完整阅读。发布版本以根目录 `tooth.json` 为准；当前稳定基线为 1.0.1，游戏行为保持用户已验收的 0.2.22 / 1.0.0，本版清理开发期调试日志。配置 schema 仍为 3，遥测 schema 仍为 1，不能把它们改成发布版本号。
 
 ## 1. 范围与环境
 
@@ -95,6 +95,7 @@
 - Race 加速度按换算后各自绝对值 `<10` 两位、`>=10` 一位；纵向带符号，横向取绝对值；斜杠两边有空格。此需求有意不完全采用 Java `threeSigFig()` 的 9.95/99.95 边界。
 - LL I18n 从 `getLangDir()` 加载 `en.json` 与 `zh_CN.json`。仅一套简体中文；代码接受 `zh-Hans`，不是单独维护 zh-SG/TW/HK。两语言键集保持一致，配置继续保存内部标识。
 - `showPlayerName` 是预留字段，当前未绘制，不把它列为已实现功能。
+- 不恢复逐会话/状态、快捷键、UI 页面/视口等已完成验收的调试日志及专用缓存。保留故障警告/错误、模组生命周期、遥测文件路径及检查点加载摘要；临时诊断应在发布前清理。
 
 ## 6. 构建、测试与发布
 
@@ -114,7 +115,7 @@ pwsh -File scripts/Package-Release.ps1
 2. 完成构建、打包、检查后提交相关源代码与文档，推送到 GitHub。不要提交构建输出或 force-push。
 3. 推送 **`v` 前缀语义版本标签**（例如 `v1.0.0`）。本仓库扩展模板流程：标签触发客户端 release 工作流，构建成功后自动从 changelog 创建公开 Release 并上传 ZIP、tooth 与 SHA256；也支持手工创建 published Release。
 4. 确认 Actions 完成，GitHub Release 实际有 `BedrockBoatHUD-client-windows-x64.zip`。`tooth.json` 下载 URL、ZIP 顶层 `BoatHUD/`、安装位置 `mods/BoatHUD/` 必须完全一致。config/data 保留路径也必须是 `mods/BoatHUD/`。用户明确不要兼容 ZIP，且选择保留原文件名作为唯一的新编译包、仍发布 1.0.0，之后又明确将实际安装目录改为 BoatHUD。不要添加第二个 ZIP 或别名，也不自动迁移旧安装。
-5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。正常新版本验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。**本次同版本重发的原 v1.0.0 Git/Go 清单仍可能被缓存为旧目录**，不能用修改 main 清单来声称旧命令能获得新目录。验证新下载的 ZIP：`lip install "./BedrockBoatHUD-client-windows-x64.zip#client"`，使用 ZIP 内的最新 tooth 清单；必须保留 `#client`，README 对本次重发采用这一安装方法。资产 URL 的 `?revision=20261001-boathud` 避免旧下载缓存，文件名和 Release 资产仍只有一个。再重发不同内容时按需变更 revision，并同步打包 URL 校验；未来正常新版本不必复用此日期。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。未来正常新版本可恢复版本化仓库安装命令。
+5. lip 是 Git 仓库驱动分发，不存在必须上传到中央 lip 仓库的步骤。验证 `lip view github.com/MRUIAW/BedrockBoatHUD@版本` 与隔离目录中的 `lip install "github.com/MRUIAW/BedrockBoatHUD#client@版本"`。README 保持普通仓库安装命令 `lip install "github.com/MRUIAW/BedrockBoatHUD#client"`。1.0.1 使用版本化资产 URL，不保留 1.0.0 同版本重发时的临时 revision 参数。原 v1.0.0 Git/Go 清单仍可能使用旧目录，不通过修改 main 声称旧标签已更新。轻量安装检查可 `--no-dependencies`；它不代表加载器依赖的完整安装测试。2026-10-01 的首次 1.0.1 发布已按用户要求撤回，2026-10-05 重新授权发布日志清理版；重用此版本时应核对 lip 缓存清单与实际发布资产。
 6. `preserve_files` 保护 config/data。发布时不塞进维护者的真实配置、日志、遥测、赛道文件或原项目纹理。保留 changelog/双语文档及示例。
 
 CI 使用仓库 `GITHUB_TOKEN` 的 `contents: write` 发布，无需在仓库保存个人 token。Release ZIP、tooth、清单版本一致后，才能声称 lip 可安装；只有标签或 workflow 已排队时不能声称发布完成。

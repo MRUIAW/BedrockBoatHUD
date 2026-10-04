@@ -2,16 +2,12 @@
 
 #include "client/ClientController.h"
 
-#include <algorithm>
 #include <chrono>
 #include <exception>
 #include <string>
 #include <string_view>
-#include <utility>
-#include <vector>
 
 #include "config/BoatHudConfig.h"
-#include "fmt/format.h"
 #include "ll/api/event/EventBus.h"
 #include "ll/api/event/client/ClientExitLevelEvent.h"
 #include "ll/api/event/client/ClientJoinLevelEvent.h"
@@ -22,7 +18,6 @@
 #include "ll/api/mod/NativeMod.h"
 #include "ll/api/service/TargetedBedrock.h"
 #include "mc/client/game/IClientInstance.h"
-#include "mc/client/gui/GuiData.h"
 #include "mc/client/gui/screens/ScreenView.h"
 #include "mc/client/player/LocalPlayer.h"
 #include "mc/world/actor/Actor.h"
@@ -62,14 +57,10 @@ bool ClientController::enable() noexcept {
 
         mListeners.emplace_back(eventBus.emplaceListener<ll::event::ClientJoinLevelEvent>([this](auto&) {
             endSession(nullptr);
-            mObservedScreenNames.clear();
-            mLastDrivingState.clear();
-            mMod.getLogger().info("BoatHUD client-level event received");
         }));
         mListeners.emplace_back(eventBus.emplaceListener<ll::event::ClientExitLevelEvent>([this](auto& event) {
             mSettingsOverlay.close(event.self());
             endSession(&event.self());
-            mMod.getLogger().debug("Client exited the level");
         }));
         mListeners.emplace_back(eventBus.emplaceListener<ll::event::ClientLevelTickEvent>([this](auto&) { onTick(); }));
         mListeners.emplace_back(eventBus.emplaceListener<ll::event::AfterUIRenderEvent>([this](auto& event) {
@@ -134,7 +125,6 @@ void ClientController::onTick() noexcept {
         if (mConfigService.get().checkpointsEnabled) {
             mCheckpointManager.load(mConfigService.get().checkpointFile);
         }
-        mMod.getLogger().info("BoatHUD driving session started for {}", boat->getTypeName());
     }
 
     auto const& config = mConfigService.get();
@@ -192,7 +182,6 @@ void ClientController::onKeyInput(ll::event::KeyInputEvent& event, IClientInstan
         config.enabled = !config.enabled;
         if (!config.enabled) mVisibilityGuard.restore(client);
         mConfigService.save();
-        mMod.getLogger().info("BoatHUD {} from direct key input", config.enabled ? "enabled" : "disabled");
         break;
     }
     case DefaultLayoutKey: {
@@ -201,7 +190,6 @@ void ClientController::onKeyInput(ll::event::KeyInputEvent& event, IClientInstan
         layout       = layout == "race" ? "classic" : (layout == "classic" ? "compact" : "race");
         mConfigService.save();
         mRenderer.reset();
-        mMod.getLogger().info("BoatHUD layout changed to {} from direct key input", layout);
         break;
     }
     case DefaultCameraKey: {
@@ -210,16 +198,13 @@ void ClientController::onKeyInput(ll::event::KeyInputEvent& event, IClientInstan
         enabled       = !enabled;
         if (!enabled) mCameraAssist.reset();
         mConfigService.save();
-        mMod.getLogger().info("BoatHUD camera assistance {} from direct key input", enabled ? "enabled" : "disabled");
         break;
     }
     case DefaultSettingsKey:
         event.cancel();
         mVisibilityGuard.restore(client);
         mCameraAssist.reset();
-        if (mSettingsOverlay.open(client)) {
-            mMod.getLogger().info("BoatHUD native settings screen opened from direct key input");
-        } else {
+        if (!mSettingsOverlay.open(client)) {
             mMod.getLogger().error("BoatHUD could not open its native settings screen");
         }
         break;
@@ -234,19 +219,6 @@ void ClientController::onUiRender(
     IClientInstance&          client
 ) noexcept {
     std::string const activeScreenName = client.getScreenName();
-    if (std::ranges::find(mObservedScreenNames, screenName) == mObservedScreenNames.end()
-        && mObservedScreenNames.size() < 16) {
-        mObservedScreenNames.emplace_back(screenName);
-        auto const viewport = *client.getGuiData()->mScreenSizeData->clientUIScreenSize;
-        mMod.getLogger().info(
-            "BoatHUD UI screen observed: event='{}', active='{}', gameplay={}, viewport={}x{}",
-            screenName,
-            activeScreenName,
-            client.isInWorldAndNotShowingAnyMenuScreens(),
-            viewport.x,
-            viewport.y
-        );
-    }
 
     bool const isGameplayView = screenName == activeScreenName || (activeScreenName.empty() && isHudScreen(screenName));
     if (mSettingsOverlay.isOpen()) {
@@ -293,33 +265,12 @@ void ClientController::onUiRender(
 
 Actor* ClientController::findDrivenBoat(IClientInstance& client) noexcept {
     auto* player = client.getLocalPlayer();
-    if (player == nullptr) {
-        reportDrivingState("local player unavailable");
-        return nullptr;
-    }
+    if (player == nullptr) return nullptr;
 
     auto* vehicle = player->getVehicle();
-    if (vehicle == nullptr) {
-        reportDrivingState("not mounted");
-        return nullptr;
-    }
-    if (!isBoat(*vehicle)) {
-        reportDrivingState(fmt::format("mounted non-boat entity '{}'", vehicle->getTypeName()));
-        return nullptr;
-    }
-    if (vehicle->getFirstPassenger() != player) {
-        reportDrivingState(fmt::format("boat passenger in '{}'", vehicle->getTypeName()));
-        return nullptr;
-    }
+    if (vehicle == nullptr || !isBoat(*vehicle) || vehicle->getFirstPassenger() != player) return nullptr;
 
-    reportDrivingState(fmt::format("driving boat '{}'", vehicle->getTypeName()));
     return vehicle;
-}
-
-void ClientController::reportDrivingState(std::string state) noexcept {
-    if (state == mLastDrivingState) return;
-    mLastDrivingState = std::move(state);
-    mMod.getLogger().info("BoatHUD driving state: {}", mLastDrivingState);
 }
 
 void ClientController::endSession(IClientInstance* client) noexcept {
@@ -335,7 +286,6 @@ void ClientController::endSession(IClientInstance* client) noexcept {
     mTelemetryWriter.stop();
     mTelemetryStartAttempted = false;
     mRenderer.reset();
-    mMod.getLogger().info("BoatHUD driving session ended");
 }
 
 } // namespace boat_hud::client

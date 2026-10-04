@@ -72,7 +72,7 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'examples') -Destination (Join-Pa
 $archiveName = 'BedrockBoatHUD-client-windows-x64.zip'
 $archivePath = Join-Path $releaseRoot $archiveName
 $assetUrl = $package.variants[0].assets[0].urls[0].Replace('{{tooth}}', $package.tooth).Replace('{{version}}', $version)
-if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/${archiveName}?revision=20261001-boathud") {
+if ($assetUrl -cne "https://github.com/MRUIAW/BedrockBoatHUD/releases/download/v$version/$archiveName") {
     throw 'lip asset URL does not match the release archive'
 }
 $placement = $package.variants[0].assets[0].placements[0]
